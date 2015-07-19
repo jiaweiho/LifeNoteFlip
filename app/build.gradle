@@ -1,0 +1,41 @@
+apply plugin: 'android'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
+
+
+    defaultConfig {
+        minSdkVersion 22
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "NOTE_STORE_URL", "\"https://sandbox.evernote.com/shard/s1/notestore\""
+            buildConfigField "String", "USER_STORE_URL", "\"https://sandbox.evernote.com/edam/user\""
+            buildConfigField "String", "AUTH_TOKEN", "\"S=s1:U=90b39:E=15424eae2d9:C=14ccd39b348:P=1cd:A=en-devtoken:V=2:H=b806de52190ace048e535f4280c1ae4a\"" // Expires 17 April 2016 08:50
+        }
+        release {
+//            runProguard false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:cardview-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.evernote:android-sdk:2.0.0-RC2'
+    compile 'com.koushikdutta.ion:ion:2.1.6'
+    compile 'com.google.guava:guava:18.0'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

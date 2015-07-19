@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LifeNoteFlip</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="action_settings">Settings</string>
+    <string name="bare_save">Save</string>
+    <string name="bare_status_edit_hint">Status e.g. Running</string>
+    <string name="bare_app_name_edit_hint">Name of app being used</string>
+    <string name="bare_title">AppActivity</string>
+    <string name="bare_app_name">App name</string>
+
+</resources>
