@@ -19,6 +19,6 @@ public enum Services {
 
     @Override
     public String toString() {
-        return super.toString();
+        return name.toString();
     }
 }

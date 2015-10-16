@@ -1,10 +1,10 @@
 package com.jwho.lifenoteflip.app;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-public class LifeNoteMain extends ActionBarActivity {
+public class LifeNoteMain extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

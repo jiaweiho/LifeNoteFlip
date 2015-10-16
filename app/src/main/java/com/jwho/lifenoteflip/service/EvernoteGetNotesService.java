@@ -64,7 +64,7 @@ public class EvernoteGetNotesService extends AsyncTask<String, Void, NoteList> {
         Note noteWithData;
         for (Note note : result.getNotes()) {
             noteWithData = noteStore.getNote(BuildConfig.AUTH_TOKEN, note.getGuid(), true, true, true, false);
-            dbAdapter.insertAppActivity(Services.EVERNOTE, noteWithData.getContent(), note.getTitle());
+            dbAdapter.insertAppActivity(Services.EVERNOTE, noteWithData.getContent());
             dbAdapter.insertNote(note.getContent(), note.getTitle());
             for (Resource res : noteWithData.getResources()) {
                 dbAdapter.insertResource(res.getGuid(), res.getNoteGuid(), "Started");

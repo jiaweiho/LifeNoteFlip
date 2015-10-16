@@ -8,7 +8,7 @@ import static com.jwho.lifenoteflip.dataaccess.AppActivityContract.AppActivityEn
 import static com.jwho.lifenoteflip.dataaccess.AppActivityContract.AppActivityEntry.TABLE_DELETE_ENTRIES;
 
 public class AppActivityEntryDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "AppActivityLog.db";
 
     public AppActivityEntryDbHelper(Context context) {

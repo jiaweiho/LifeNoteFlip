@@ -22,11 +22,10 @@ public class AppActivityDbAdapter {
         db = dbHelper.getWritableDatabase();
     }
 
-    public boolean insertAppActivity(Services appName, String status, String time) {
+    public boolean insertAppActivity(Services appName, String status) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_STATUS, status);
         values.put(COLUMN_APP_NAME, appName.toString());
-        values.put(COLUMN_CREATED_DATE, time);
         return db.insert(TABLE_NAME, null, values) != -1;
     }
 
@@ -35,14 +34,15 @@ public class AppActivityDbAdapter {
         values.put(COLUMN_RESOURCE_ID, resourceId);
         values.put(COLUMN_ACTIVITY_ID, activityId);
         values.put(AppActivityContract.MediaResources.COLUMN_STATUS, status);
-        return db.insert(AppActivityContract.MediaResources.TABLE_NAME, null, values) != -1;
+        return db.insertWithOnConflict(AppActivityContract.MediaResources.TABLE_NAME, null, values,
+                SQLiteDatabase.CONFLICT_REPLACE) != -1;
     }
 
     public boolean insertNote(String content, String title) {
         ContentValues values = new ContentValues();
         values.put(AppActivityContract.Notes.COLUMN_APP_CONTENT, content);
         values.put(AppActivityContract.Notes.COLUMN_TITLE, title);
-        return db.insert(AppActivityContract.Notes.TABLE_NAME, null, values) != -1;
+        return db.insertWithOnConflict(AppActivityContract.Notes.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE) != -1;
     }
 
     public void updateNote(String noteId, String activityId) {

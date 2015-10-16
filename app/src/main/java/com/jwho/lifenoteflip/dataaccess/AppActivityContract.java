@@ -47,8 +47,8 @@ public final class AppActivityContract {
         public static final String COLUMN_STATUS = "status";
         public static final String TABLE_CREATE_ENTRIES = "CREATE TABLE " +
                 TABLE_NAME + "(" +
-                COLUMN_RESOURCE_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_ACTIVITY_ID + " INTEGER," +
+                COLUMN_RESOURCE_ID + " TEXT PRIMARY KEY," +
+                COLUMN_ACTIVITY_ID + " TEXT," +
                 COLUMN_STATUS + " TEXT" +
                 ")";
         public static final String TABLE_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -64,6 +64,7 @@ public final class AppActivityContract {
                 TABLE_NAME + "(" +
                 COLUMN_NOTE_ID + " INTEGER PRIMARY KEY," +
                 COLUMN_ACTIVITY_ID + " INTEGER," +
+                COLUMN_TITLE + " TEXT," +
                 COLUMN_APP_CONTENT + " TEXT" +
                 ")";
         public static final String TABLE_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;

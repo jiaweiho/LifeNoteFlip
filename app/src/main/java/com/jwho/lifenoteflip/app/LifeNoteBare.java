@@ -12,7 +12,6 @@ import android.widget.EditText;
 
 import com.jwho.lifenoteflip.app.helpers.TaskCallback;
 import com.jwho.lifenoteflip.dataaccess.AppActivityDbAdapter;
-import com.jwho.lifenoteflip.service.Services;
 
 import java.util.ArrayList;
 
@@ -107,7 +106,7 @@ public class LifeNoteBare extends Activity implements TaskCallback {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            return adapter.insertAppActivity(UNKNOWN, params[0], params[2]);
+            return adapter.insertAppActivity(UNKNOWN, params[0]);
         }
 
         @Override
