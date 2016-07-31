@@ -12,4 +12,20 @@ public class AppActivity {
         this.color = color;
         this.imgPath = imgPath;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
 }

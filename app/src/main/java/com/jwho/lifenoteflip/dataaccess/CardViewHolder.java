@@ -17,7 +17,7 @@ public class CardViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         appName = (TextView) itemView.findViewById(R.id.txtAppname);
         status = (TextView) itemView.findViewById(R.id.txtStatus);
-        imgAppIcon = (ImageView) itemView.findViewById(R.id.imgAppIcon);
+//        imgAppIcon = (ImageView) itemView.findViewById(R.id.imgAppIcon);
     }
 
     public TextView getAppName() {

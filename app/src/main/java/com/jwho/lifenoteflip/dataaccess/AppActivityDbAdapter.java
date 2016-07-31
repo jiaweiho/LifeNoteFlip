@@ -60,4 +60,12 @@ public class AppActivityDbAdapter {
         }
         return cursor;
     }
+
+    public Cursor readAllAppActivities() {
+        Cursor cursor = db.query(false, TABLE_NAME, null, null, null, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
 }

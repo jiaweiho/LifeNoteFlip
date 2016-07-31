@@ -108,4 +108,74 @@ public class EvernoteService extends JobService {
             return false;
         }
     }
+
+    private static class EvernoteGetResourcesTaskWithJobService extends AsyncTask<JobParameters, Void, JobParameters[]> {
+        EvernoteService service;
+
+        public EvernoteGetResourcesTaskWithJobService(EvernoteService service) {
+            this.service = service;
+        }
+
+        @Override
+        protected JobParameters[] doInBackground(JobParameters... params) {
+            PersistableBundle extras = params[0].getExtras();
+            getNote(extras.getString(BUNDLE_NOTE_FILTER_TAG),
+                    extras.getString(AppActivityService.BUNDLE_APP_ACTIVITY_STATUS));
+            return params;
+        }
+
+        public NoteList getNote(String filter, String status) {
+            try {
+                THttpClient noteStoreTrans = new THttpClient(BuildConfig.NOTE_STORE_URL);
+                TBinaryProtocol noteStoreProt = new TBinaryProtocol(noteStoreTrans);
+                NoteStore.Client noteStore = new NoteStore.Client(noteStoreProt, noteStoreProt);
+                NoteFilter noteFilter = new NoteFilter();
+                noteFilter.setWords(filter);
+
+                NoteList result = noteStore.findNotes(BuildConfig.AUTH_TOKEN, noteFilter, 0, 50);
+                L.i(service.getClass(), "Found: " + result.getTotalNotes());
+                saveEvernoteToStore(result, noteStore, status);
+
+                return result;
+//            return new NoteFromEvernote(resGuid, note.getTitle(), note.getContent(), resUrl);
+            } catch (Exception e) {
+                L.i(service.getClass(), e.getStackTrace().toString());
+            }
+            return null;
+        }
+
+        private void saveEvernoteToStore(NoteList result, NoteStore.Client noteStore, String status) throws EDAMUserException, EDAMSystemException, TException, EDAMNotFoundException {
+            AppActivityDbAdapter dbAdapter = new AppActivityDbAdapter(service.getApplicationContext());
+            Note noteWithData;
+            for (Note note : result.getNotes()) {
+                L.i(service.getClass(), "GUID: " + note.getGuid() + " Title: " + note.getTitle());
+                noteWithData = noteStore.getNote(BuildConfig.AUTH_TOKEN, note.getGuid(), true, true, false, false);
+                dbAdapter.insertAppActivity(Services.EVERNOTE, status);
+                dbAdapter.insertNote(noteWithData.getContent(), note.getTitle());
+                for (Resource res : noteWithData.getResources()) {
+                    dbAdapter.insertResource(res.getGuid(), res.getNoteGuid(), "Started");
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(JobParameters[] jobParameters) {
+            super.onPostExecute(jobParameters);
+            for (JobParameters params : jobParameters) {
+                if (!hasJobBeenStopped(params)) {
+                    service.jobFinished(params, false);
+                }
+            }
+        }
+
+        private boolean hasJobBeenStopped(JobParameters params) {
+            // Logic for checking stop.
+            return false;
+        }
+
+        public boolean stopJob(JobParameters params) {
+            // Logic for stopping a job (task in this case), return true if job should be rescheduled.
+            return false;
+        }
+    }
 }

@@ -1,36 +1,41 @@
 package com.jwho.lifenoteflip.app;
 
-import android.app.Fragment;
-import android.app.job.JobInfo;
+import android.support.v4.app.Fragment;
 import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.common.io.Files;
+import com.jwho.lifenoteflip.app.helpers.HighlightActivityImageAdapter;
 import com.jwho.lifenoteflip.dataaccess.AppActivity;
-import com.jwho.lifenoteflip.dataaccess.AppActivityItemAdapter;
-import com.jwho.lifenoteflip.service.AppActivityService;
-import com.jwho.lifenoteflip.service.EvernoteService;
+import com.jwho.lifenoteflip.service.Services;
 import com.jwho.lifenoteflip.utils.L;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static android.support.v7.widget.StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS;
 import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
 
 /**
- * First page in the app.
+ * Highlights activities from your activities.
  */
-public class HighlightFragment extends Fragment {
+public class HighlightFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int JOB_ID = 0;
-    private AppActivityItemAdapter adapter;
+    public static final Services[] SERVICES = Services.values();
+    //    private AppActivityItemAdapter adapter;
+    private HighlightActivityImageAdapter mAdapter;
 
     @Nullable
     @Override
@@ -43,13 +48,25 @@ public class HighlightFragment extends Fragment {
         sgm.setGapStrategy(GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
         recList.setLayoutManager(sgm);
 
-        // Sets the adapter for recyclerview
+        // Sets the adapter for recyclerview. TODO: Get from cursorloader.
         AppActivity evernote = new AppActivity("Freelancing", "Evernote", "green", "");
         AppActivity youtube = new AppActivity("Watching inspirationally", "Youtube", "red", "");
         AppActivity facebook = new AppActivity("Netsocialing", "Facebook", "blue", "");
         AppActivity hangouts = new AppActivity("Chatting", "Hangouts", "yellow", "");
-        adapter = new AppActivityItemAdapter(Arrays.asList(evernote, youtube, facebook, hangouts));
-        recList.setAdapter(adapter);
+
+        File externalFilesDir = getActivity().getExternalFilesDir("icons");
+        try {
+            Files.createParentDirs(externalFilesDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mAdapter = new HighlightActivityImageAdapter(getActivity(),
+                externalFilesDir.getAbsoluteFile(), 100, 100);
+
+//        mAdapter.swapData(new ArrayList<>(Arrays.asList(evernote, youtube, facebook, hangouts)));
+        recList.setAdapter(mAdapter);
+
+        getActivity().getSupportLoaderManager().initLoader(R.id.highlights_apps, null, this);
 
         // Start download of note from Evernote and its resources.
         /*EvernoteGetNotesService evernoteService = new EvernoteGetNotesService(this);
@@ -60,7 +77,7 @@ public class HighlightFragment extends Fragment {
         } else {
 
         }
-        PersistableBundle bundle = new PersistableBundle();
+        /*PersistableBundle bundle = new PersistableBundle();
         bundle.putString(EvernoteService.BUNDLE_NOTE_FILTER_TAG, "tag:note");
         bundle.putString(AppActivityService.BUNDLE_APP_ACTIVITY_STATUS, "Being Creative");
         ComponentName evernoteService = new ComponentName(getActivity(), EvernoteService.class);
@@ -77,16 +94,31 @@ public class HighlightFragment extends Fragment {
         int result = scheduler.schedule(jobInfo);
         if (result == JobScheduler.RESULT_SUCCESS) {
             L.d(this.getClass(), "Job scheduled successfully");
-        }
+        }*/
 
         return view;
     }
 
     @Override
     public void onPause() {
-        L.dM(this.getClass(), "onPause", "Will run Scheduler.cancelAll()...");
+        L.dM(getClass(), "onPause", "Will run Scheduler.cancelAll()...");
         JobScheduler scheduler = (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
         scheduler.cancelAll();
         super.onPause();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new HighlightCursorLoader(getActivity().getApplicationContext(), );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
     }
 }
